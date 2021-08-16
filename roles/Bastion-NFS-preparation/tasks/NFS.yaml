@@ -1,0 +1,37 @@
+---
+- name: Create a new primary partition for /dev/sdb
+  community.general.parted:
+    device: /dev/sdb
+    number: 1
+    flags: [ lvm ]
+    state: present
+
+- name: Create a ext4 filesystem on /dev/sdb1 and check disk blocks
+  filesystem:
+    fstype: ext4
+    dev: /dev/sdb1
+
+- name: Creating NFS directory
+  file:
+    path: /srv/nfs
+    state: directory
+
+- name: Mounting NFS directory & Adding Entry to fstab
+  ansible.posix.mount:
+    path: /srv/nfs
+    src: /dev/sdb1
+    fstype: ext4
+    state: mounted
+
+- name: Installing NFS Required Packages
+  apt:
+    pkg:
+      - nfs-common
+      - nfs-kernel-server
+    state: present
+
+- name: Starting and Enabling NFS service
+  service:
+    name: nfs-kernel-server
+    state: started
+    enabled: true

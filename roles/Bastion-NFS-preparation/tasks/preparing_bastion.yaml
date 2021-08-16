@@ -1,0 +1,15 @@
+---
+# tasks file for bastion-preparation
+- name: Copying SA Key to Bastion host  
+  ansible.builtin.copy:
+    src: "{{ gcp_cred_file }}"
+    dest: /root/SA_Key/
+    mode: '0644' 
+  register: SA_key
+
+- name: Authenticate gcloud using SA Key
+  ansible.builtin.shell: gcloud auth activate-service-account --key-file "{{ SA_key.dest }}"
+
+- name: Download GKE cluster kubeconfig
+  ansible.builtin.shell: gcloud container clusters get-credentials "{{ gke_cluster_name }}"  --zone "{{ gcp_def_zone }}"
+

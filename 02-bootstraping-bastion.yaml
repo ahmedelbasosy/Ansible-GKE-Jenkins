@@ -6,13 +6,13 @@
   vars_files:
     - vars/global_vars.yaml
     - vars/gke_vars.yaml
-    - vars/gke_oauth_scopes.yaml
     - vars/nfs_ip.yaml
   vars:
     docker_username: ahmedhelbasosy
     docker_password: '0103050709Bo$'
+    jenkins_master_image: ahmedhelbasosy/jenkins-master
   roles:
-    - bastion-NFS-preparation
-    - jenkins-master-image
+    - Bastion-NFS-preparation
+    - jenkins-master-IMAGE
     - gke-NFS-provisioner
     

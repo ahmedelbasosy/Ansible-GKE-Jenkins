@@ -1,0 +1,37 @@
+---
+- name: Installing Required Packages For Docker
+  apt:
+    pkg:
+     - apt-transport-https
+     - ca-certificates
+     - curl
+     - gnupg
+     - lsb-release
+    state: present
+    update_cache: yes
+
+- name: Checking if Docker Packages Are installed
+  command: dpkg-query -l docker-ce
+  register: deb_check
+  failed_when: "'FAILED' in deb_check.stderr"
+
+
+- name: Downloading Get Docker Script
+  shell: curl -fsSL https://get.docker.com -o /root/get-docker.sh
+  when: deb_check.stderr.find('no packages found') != -1
+
+- name: Changing Get Docker Script Permission
+  file:
+    path: /root/get-docker.sh
+    mode: '0755'
+  when: deb_check.stderr.find('no packages found') != -1
+
+- name: Running Get Docker Script
+  shell: /root/get-docker.sh
+  when: deb_check.stderr.find('no packages found') != -1
+
+- name: Starting & Enabling  Docker Service
+  service:
+    name: docker
+    state: started
+    enabled: true

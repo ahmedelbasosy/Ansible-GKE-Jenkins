@@ -1,0 +1,43 @@
+---
+
+- name: Copying Image Files to Bastion Host
+  copy:
+    src: files/jenkins-master
+    dest: /root/
+    mode: '0755'
+
+- name: Installing Required packages For Ansible Docker Module
+  package:
+    name: python3-pip
+    state: latest
+
+- name: installing docker-py
+  shell: pip3 install docker-py
+
+- name: Generating Image Tag
+  shell: date +%d%m%y
+  register: image_tag
+
+- name: Building Jenkins Master Image tag - "{{ image_tag.stdout }}"
+  shell:
+   cmd: docker build -t "{{ jenkins_master_image }}":"{{ image_tag.stdout }}" .
+   chdir: /root/jenkins-master/
+
+- name: Pushing Jenkins Master Image tag - "{{ image_tag.stdout }}"
+  community.docker.docker_image:
+    name: "{{ jenkins_master_image }}"
+    tag: "{{ image_tag.stdout }}"
+    push: yes
+    source: local
+
+- name: Adding Jenkins Master Image tag - latest
+  shell:
+   cmd: docker tag "{{ jenkins_master_image }}":"{{ image_tag.stdout }}" "{{ jenkins_master_image }}":latest
+   chdir: /root/jenkins-master/
+
+- name: Pushing Jenkins Master Image tag - latest
+  community.docker.docker_image:
+    name: "{{ jenkins_master_image }}"
+    tag: latest
+    push: yes
+    source: local

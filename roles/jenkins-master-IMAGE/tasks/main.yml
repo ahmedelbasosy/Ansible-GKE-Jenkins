@@ -1,0 +1,7 @@
+---
+# tasks file for bastion-jenkins-master
+- name: Authenticating Docker on Bastion Host
+  include_tasks: docker-login.yaml
+
+- name: Building Jenkins Master Image
+  include_tasks: build-jenkins-master.yaml

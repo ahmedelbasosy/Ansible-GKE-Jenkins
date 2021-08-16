@@ -1,0 +1,5 @@
+---
+
+- name: login to Docker Registery
+  shell: docker login --username="{{ docker_username }}" --password="{{ docker_password }}"
+

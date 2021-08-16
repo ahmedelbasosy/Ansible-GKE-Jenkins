@@ -1,0 +1,20 @@
+---
+# tasks file for Bastion-NFS-preparation
+- name: Configuring Kube Bastion
+  command: hostname
+  register: kube_bastion
+
+- debug:
+    msg: "{{ kube_bastion.stdout }}"
+
+- name: Preparing Bastion host  
+  include_tasks: preparing_bastion.yaml
+
+- name: Installing Kubectl
+  include_tasks: install-kubernetes.yaml
+
+- name: Installing Docker
+  include_tasks: install-docker.yaml
+
+- name: NFS
+  include_tasks: NFS.yaml
