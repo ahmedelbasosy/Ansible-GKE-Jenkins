@@ -1,0 +1,15 @@
+---
+# vars file for gke-FIREWALL
+firewall_rules_external:
+ http:
+  ip_protocol: tcp
+  port: 80
+ https:
+  ip_protocol: tcp
+  port: 443
+ ssh:
+  ip_protocol: tcp
+  port: 22
+ rdp:
+  ip_protocol: tcp
+  port: 3389

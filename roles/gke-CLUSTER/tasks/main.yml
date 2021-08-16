@@ -1,0 +1,38 @@
+---
+# tasks file for gke-CLUSTER
+#
+ - name: Bootstrapping a GKE cluster - {{ gke_cluster_name }}
+   google.cloud.gcp_container_cluster:
+   # Required Fields
+     project: "{{ gcp_project }}"
+     auth_kind: "{{ gcp_cred_kind }}"
+     service_account_file: "{{ gcp_cred_file }}"
+     name: "{{ gke_cluster_name }}"
+     network: "{{ gke_network.name }}"
+    # Cluster Version
+     location: "{{ gcp_def_zone }}"
+     initial_cluster_version: "{{ gke_cluster_version }}"
+     initial_node_count: "{{ gke_node_count }}"
+     ip_allocation_policy:
+       use_ip_aliases: yes
+       create_subnetwork: yes
+       subnetwork_name: "{{ gke_network.name }}-{{ gke_node_pool_name }}-subnetwork"
+       # Commented Out So they Are Created Automatically
+#      cluster_ipv4_cidr_block:
+#      node_ipv4_cidr_block:
+#      service_ipv4_cidr_block:
+    # Cluster Nodes Config
+     addons_config:
+       horizontal_pod_autoscaling:
+         disabled: no
+       http_load_balancing:
+         disabled: no
+       network_policy_config:
+         disabled: no
+    # Resource Desired State:
+     state: present
+   register: cluster
+
+ - name: Debugging Cluster Info
+   debug:
+     msg: "{{ cluster }}"

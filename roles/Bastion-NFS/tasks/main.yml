@@ -1,0 +1,47 @@
+---
+# tasks file for Bastion-NFS
+  - name: Creating Generic UBUNTU Bastion Host with NFS
+    google.cloud.gcp_compute_instance:
+      name: bastion-ubuntu
+      disks:
+        - auto_delete: 'true'
+          boot: 'true'
+          initialize_params:
+            source_image: projects/ubuntu-os-cloud/global/images/family/ubuntu-1804-lts
+        - auto_delete: 'false'
+          initialize_params:
+            disk_size_gb: '25'
+            disk_type: pd-standard
+      network_interfaces:
+      - network:
+          selfLink: "{{ gke_network.selfLink }}"
+        access_configs:
+        - name: External NAT
+          type: ONE_TO_ONE_NAT
+      machine_type: e2-medium
+      can_ip_forward: 'true'
+      zone: "{{ gcp_def_zone }}"
+      project: "{{ gcp_project }}"
+      auth_kind: "{{ gcp_cred_kind }}"
+      service_account_file: "{{ gcp_cred_file }}"
+      metadata:
+#       enable-oslogin='TRUE'
+      tags:
+        items:
+          - bastion
+          - bastion-ubuntu
+          - bastion-nfs
+      labels:
+        type: bastion
+      state: present
+    register: bastion
+
+  - name: Bastion Host Info
+    debug:
+      msg: 'Host Private IP Address Is: {{ bastion.networkInterfaces[0].networkIP }} '
+
+  - name: Storing Bastion Private IP in nfs_ip.yaml File
+    copy:
+      dest: "vars/nfs_ip.yaml"
+      content: |
+        nfs_ip: {{ bastion.networkInterfaces[0].networkIP }}

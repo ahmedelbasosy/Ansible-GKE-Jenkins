@@ -1,0 +1,5 @@
+gcp_def_zone: "us-central1-a"
+gcp_def_region: "us-central1"
+gcp_project: neat-coast-316300
+gcp_cred_kind: serviceaccount
+gcp_cred_file: .files/SA_Key/neat-coast-316300-3542846d5971.json

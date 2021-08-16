@@ -1,0 +1,28 @@
+---
+# tasks file for gke-NodePool
+#
+ - name: Bootstrap GKE Node Pool - {{ gke_node_pool_name }}
+   google.cloud.gcp_container_node_pool:
+     # Required Fields
+     initial_node_count: "{{ gke_node_count }}"
+     project: "{{ gcp_project }}"
+     auth_kind: "{{ gcp_cred_kind }}"
+     service_account_file: "{{ gcp_cred_file }}"
+     name: "{{ gke_node_pool_name }}"
+     cluster: "{{ cluster }}"
+     location: "{{ gcp_def_zone }}"
+     config:
+       machine_type: "{{ gke_node_machine_type }}"
+       image_type: "{{ gke_node_image_type }}"
+       disk_size_gb: "{{ gke_node_disk_size_gb }}"
+       oauth_scopes: "{{ oauth_scopes }}"
+     # Autoscaling Config
+     autoscaling:
+       enabled: yes
+       min_node_count: "{{ gke_min_node_count }}"
+       max_node_count: "{{ gke_max_node_count }}"
+     # Node Kubernetes Version & Settings
+     version: "{{ gke_node_kube_version }}"
+     max_pods_constraint:
+       max_pods_per_node: "{{ gke_max_pod_per_node }}"
+     state: present

@@ -1,0 +1,29 @@
+---
+- hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars/global_vars.yaml
+    - vars/gke_vars.yaml
+    - vars/gke_oauth_scopes.yaml
+  roles:
+    - gke-network
+    - Bastion-NFS
+    - gke-cluster
+    - gke-nodepool
+
+- hosts: bastion
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars/global_vars.yaml
+    - vars/gke_vars.yaml
+    - vars/gke_oauth_scopes.yaml
+    - vars/nfs_ip.yaml
+  vars:
+    docker_username: ahmedhelbasosy
+    docker_password: '0103050709Bo$'
+  roles:
+    - bastion-NFS-preparation
+    - jenkins-master-image
+    - gke-NFS-provisioner
+    

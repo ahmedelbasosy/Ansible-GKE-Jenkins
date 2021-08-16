@@ -1,0 +1,11 @@
+---
+# tasks file for gke-NETWORK
+- name: Creating a Network for GKE cluster - {{ gke_cluster_name }}
+  google.cloud.gcp_compute_network:
+    name: "gke-{{ gke_cluster_name }}"
+    auto_create_subnetworks: 'yes'
+    project: "{{ gcp_project }}"
+    auth_kind: "{{ gcp_cred_kind }}"
+    service_account_file: "{{ gcp_cred_file }}"
+    state: present
+  register: gke_network

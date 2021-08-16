@@ -1,0 +1,15 @@
+gke_cluster_name: my-cluster-1
+gke_cluster_version: 1.20.8-gke.2100
+
+
+gke_node_count: 1
+gke_max_node_count: 3
+gke_min_node_count: 1
+
+gke_node_pool_name: my-nodepool
+gke_node_machine_type: e2-medium
+gke_node_kube_version: 1.20.6-gke.1000
+gke_node_image_type: UBUNTU_CONTAINERD
+gke_node_disk_size_gb: 50
+gke_max_pod_per_node: 100
+

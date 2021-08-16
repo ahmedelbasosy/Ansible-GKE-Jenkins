@@ -1,0 +1,15 @@
+---
+- name: Bootstraping GKE Cluster 
+  hosts: localhost
+  gather_facts: false
+  vars_files:
+    - vars/global_vars.yaml
+    - vars/gke_vars.yaml
+    - vars/gke_oauth_scopes.yaml
+  roles:
+    - gke-NETWORK
+    - gke-FIREWALL
+    - Bastion-NFS
+    - gke-CLUSTER
+    - gke-NodePool
+
