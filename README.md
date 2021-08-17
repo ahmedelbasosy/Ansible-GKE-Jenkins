@@ -9,6 +9,7 @@
 - [Edit Variables Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
 - [Our Playbooks](#playbooks) <a name="Ansible-GKE-Jenkins"/>
 - [Edit Jenkins Master Image Files](#jenkins_master_image) <a name="Ansible-GKE-Jenkins"/>
+- [Jenkins Master Deployment](#jenkins_master_deployment) <a name="Ansible-GKE-Jenkins"/>
 
 # introduction
 This Repo shows What Can be done Using Ansible in order to provision a Full Environment having the following:
@@ -306,3 +307,7 @@ you will find the Jenkins-Master Image Files Under:
       ENV JENKINS_PASS password                       # Default User Password
 
       COPY default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
+
+
+# jenkins_master_deployment
+
