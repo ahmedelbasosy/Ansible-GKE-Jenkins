@@ -348,3 +348,7 @@ After Building our Jenkins-Master Image on Bastion Host. It's time to DEPLOY it 
 # hello_from_jenkins_master
 
 At the End you will get a direct link to you Jenkins Pod using it's LoadBalancer Service IP
+
+### Note: 
+      username: admin
+      password: password
