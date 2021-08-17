@@ -192,7 +192,7 @@ The Output should look like the following:
     gcp_def_region: "YOUR_GCP_DEFAULT_REGION"
     gcp_project: YOUR_GCP_PROJECT_ID
     gcp_cred_kind: serviceaccount
-    gcp_cred_file: .files/SA_Key/gcp-key-ansible-sa.json
+    gcp_cred_file: ../.files/SA_Key/gcp-key-ansible-sa.json
     
   ## 02-gke_vars.yaml
 --> GKE Cluster and Nodepool Variables ( Cluster_Name, Nodepool_Name, Versions, Number of Nodes )
@@ -233,38 +233,38 @@ The Output should look like the following:
 
 # playbooks
 
-Our Playbook.yaml file would import 3 Playbooks
+Our Playbook.yaml file would import 3 Playbooks from Playbooks directory:
    
     ---
     - name: Running "Bootstraping GKE Cluster" PLAYBOOK
-      import_playbook: 01-bootsraping-gke.yaml 
+      import_playbook: playbooks/01-bootsraping-gke.yaml 
 
     - name: Running "Bootstrapping Bastion" PLAYBOOK
-      import_playbook: 02-bootstraping-bastion.yaml
+      import_playbook: playbooks/02-bootstraping-bastion.yaml
 
     - name: Running "Deploying NFS Provisioner & Jenkins Master" PLAYBOOK 
-      import_playbook: 03-deploy-NFS_JenkinsMaster.yaml
+      import_playbook: playbooks/03-deploy-NFS_JenkinsMaster.yaml
     
 
   ## 01-bootsraping-gke.yaml 
 
     roles:
-      - gke-NETWORK                   # Creating a GCP Network
-      - gke-FIREWALL                  # Applying External & Internal Default Firewall Rules to GCP Network 
-      - Bastion-NFS                   # Creating a Bastion Host with Extra Disk to be used for NFS Shares
-      - gke-CLUSTER                   # Bootstraping a GKE Cluster
-      - gke-NodePool                  # Bootstrapping a NodePool 
+      - ../roles/gke-NETWORK                   # Creating a GCP Network
+      - ../roles/gke-FIREWALL                  # Applying External & Internal Default Firewall Rules to GCP Network 
+      - ../roles/Bastion-NFS                   # Creating a Bastion Host with Extra Disk to be used for NFS Shares
+      - ../roles/gke-CLUSTER                   # Bootstraping a GKE Cluster
+      - ../roles/gke-NodePool                  # Bootstrapping a NodePool 
       
   ## 02-bootstraping-bastion.yaml
 
     roles:
-      - Bastion-NFS-preparation                   # Installing Required Software Packages
-      - jenkins-master-IMAGE                      # Building and Publishing Jenkins-Master Image using Bastion Host
-      - Templating-Files                          # Templating Files For NFS-Provisioner & Jenkins-Master Deployment
+      - ../roles/Bastion-NFS-preparation                   # Installing Required Software Packages
+      - ../roles/jenkins-master-IMAGE                      # Building and Publishing Jenkins-Master Image using Bastion Host
+      - ../roles/Templating-Files                          # Templating Files For NFS-Provisioner & Jenkins-Master Deployment
       
   ## 03-deploy-NFS_JenkinsMaster.yaml
 
     roles:
-      - gke-NFS-provisioner                      # Deploying NFS-Provisioner To Our GKE Cluster
-      - gke-JENKINS-Master-Deployment            # Deploying Jenkins-Master To our GKE Cluster
+      - ../roles/gke-NFS-provisioner                      # Deploying NFS-Provisioner To Our GKE Cluster
+      - ../roles/gke-JENKINS-Master-Deployment            # Deploying Jenkins-Master To our GKE Cluster
 
