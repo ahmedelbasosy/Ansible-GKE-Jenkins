@@ -234,7 +234,14 @@ The Output should look like the following:
 # playbooks
 
 Our Playbook.yaml file would import 3 Playbooks from Playbooks directory:
-   
+
+    playbooks
+    ├── 01-bootsraping-gke.yaml
+    ├── 02-bootstraping-bastion.yaml
+    └── 03-deploy-NFS_JenkinsMaster.yaml
+
+Our Playbook.yaml file content:
+    
     ---
     - name: Running "Bootstraping GKE Cluster" PLAYBOOK
       import_playbook: playbooks/01-bootsraping-gke.yaml 
