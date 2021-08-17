@@ -1,19 +1,18 @@
 plugin: gcp_compute
+auth_kind: serviceaccount
+service_account_file: .files/SA_Key/gcp-key-ansible-sa.json
+ansible_ssh_user: ansible                                     # Automatically Created When Adding SSH to Project Metadata From # setup_gcp_account step 4
+#ansible_ssh_private_key_file: .files/.ssh/ansible_rsa        # You Can Set "private_key_file = .files/.ssh/ansible_rsa" in ansible.cfg file
 projects:
   - YOUR_GCP_PROJECT_ID
 regions:
   - GCP_REGION
-auth_kind: serviceaccount
-service_account_file: .files/SA_Key/gcp-key-ansible-sa.json
-
-ansible_ssh_user: ansible
-#ansible_ssh_private_key_file: .files/.ssh/ansible_rsa
 
 keyed_groups:
   - key: zone
     prefix: zone
 groups:
   bastion_hosts: "'bastion' in name"
-  my-nodepool: "'my-nodepool' in name"
+  my-nodepool: "'my-nodepool' in name"                      # Edit This with you NodePool Name
 
 

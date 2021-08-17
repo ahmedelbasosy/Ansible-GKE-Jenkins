@@ -1,0 +1,9 @@
+---
+- name: Running "Bootstraping GKE Cluster" PLAYBOOK
+  import_playbook: 01-bootsraping-gke.yaml 
+
+- name: Running "Bootstrapping Bastion" PLAYBOOK
+  import_playbook: 02-bootstraping-bastion.yaml
+
+- name: Running "Deploying NFS Provisioner & Jenkins Master" PLAYBOOK 
+  import_playbook: 03-deploy-NFS_JenkinsMaster.yaml  

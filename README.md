@@ -7,6 +7,7 @@
 - [Setup Ansible Config File](#ansible_cfg_file) <a name="Ansible-GKE-Jenkins"/>
 - [Setup GCP Dynamic Inventory File](#inventory_file)  <a name="Ansible-GKE-Jenkins"/>
 - [Edit Variable Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
+- [Let's Play](#playbook) <a name="Ansible-GKE-Jenkins"/>
 
 # introduction
 This Repo shows What Can be done Using Ansible in order to provision a Full Environment having the following:
@@ -116,9 +117,9 @@ A Detailed Description of Inventroy File:
     
      plugin: google.cloud.gcp_compute
      auth_kind: serviceaccount
-     service_account_file: .files/SA_Key/KEY_FILE.json
-     ansible_ssh_user: ansible
-     ansible_ssh_private_key_file: .files/.ssh/ansible_rsa    # You Can Set "private_key_file =" in ansible.cfg file
+     service_account_file: .files/SA_Key/gcp-key-ansible-sa.json
+     ansible_ssh_user: ansible                                # Automatically Created When Adding SSH to Project Metadata From #setup_gcp_account step 4
+     ansible_ssh_private_key_file: .files/.ssh/ansible_rsa    # You Can Set "private_key_file = .files/.ssh/ansible_rsa" in ansible.cfg file
      
      zones: 
      # populate inventory with instances in these Zones
@@ -130,7 +131,7 @@ A Detailed Description of Inventroy File:
      
      projects: 
      # populate inventory with instances in these Projects
-     - PROJECT_ID
+     - YOUR_GCP_PROJECT_ID
      
      filters: 
      # Populate inventory with instances matching these filtes
@@ -145,7 +146,7 @@ A Detailed Description of Inventroy File:
      groups:
      # Custom Grouping of Instances
        bastion-hosts: "'bastion' in name"
-       my-nodepool: "'my-nodepool' in name"
+       my-nodepool: "'my-nodepool' in name"                         # Edit This with you NodePool Name
      
 you can add the following too ( For this play we don't need them )
 
@@ -184,4 +185,65 @@ The Output should look like the following:
     ├── 04-docker_vars.yaml                        --> Docker Variables ( username, password, and Image Name to be used )
     └── nfs_ip.yaml                                --> Used to Pass a Variable from 1st play to the 2nd play
     
+## 01-global_vars.yaml
+--> Default GCP Variables ( Project, Region, Zone, Service Account Credentials File )
 
+    gcp_def_zone: "YOUR_GCP_DEFAULT_ZONE"
+    gcp_def_region: "YOUR_GCP_DEFAULT_REGION"
+    gcp_project: YOUR_GCP_PROJECT_ID
+    gcp_cred_kind: serviceaccount
+    gcp_cred_file: .files/SA_Key/gcp-key-ansible-sa.json
+    
+## 02-gke_vars.yaml
+--> GKE Cluster and Nodepool Variables ( Cluster_Name, Nodepool_Name, Versions, Number of Nodes )
+
+    gke_cluster_name: YOUR_GKE_CLUSTER_NAME
+    gke_cluster_version: YOUR_GKE_CLUSTER_VERSION               # EX: 1.20.8-gke.2100
+
+
+    gke_node_count: GKE_NODEPOOL_INITIAL_COUNT                  # EX: 1
+    gke_max_node_count: GKE_NODEPOOL_MAX_COUNT                  # EX: 3
+    gke_min_node_count: GKE_NODEPOOL_MIN_COUNT                  # EX: 1
+
+    gke_node_pool_name: YOUR_NODEPOOL_NAME
+    gke_node_machine_type: NODEPOOL_INSTANCE_TYPE               # EX: e2-medium
+    gke_node_kube_version: YOUR_NODEPOOL_KUBE_VERSION           # EX: 1.20.6-gke.1000
+    gke_node_image_type: YOUR_NODEPOOL_IMAGE_TYPE               # EX: UBUNTU_CONTAINERD
+    gke_node_disk_size_gb: NODEPOOL_BOOT_DISK_SIZE_IN_GB        # EX: 50
+    gke_max_pod_per_node: MAX_POD_PER_NODE                      # Max 110
+
+## 03-gke_oauth_scopes.yaml
+--> GKE Cluster OAuth Scopes
+
+    oauth_scopes:
+     - "https://www.googleapis.com/auth/compute"
+     - "https://www.googleapis.com/auth/devstorage.read_only"
+     - "https://www.googleapis.com/auth/logging.write"
+     - "https://www.googleapis.com/auth/monitoring"
+     - "https://www.googleapis.com/auth/servicecontrol"
+     - "https://www.googleapis.com/auth/service.management.readonly"
+     - "https://www.googleapis.com/auth/trace.append"
+     
+## 04-docker_vars.yaml 
+--> Docker Variables ( username, password, and Image Name to be used )
+
+      docker_username: YOUR_DOCKER_HUB_USERNAME
+      docker_password: 'YOUR_DOCKER_HUB_PASSWORD'
+      jenkins_master_image: YOUR_DOCKER_IMAGE_FOR_JENKINS_MASTER       # EX: ahmedhelbasosy/jenkins-master
+
+# playbook
+
+Our Playbook consist of 3 Plays
+   
+    ---
+    - name: Bootstraping GKE Cluster 
+      hosts: localhost
+      
+    - name: Bootstrapping Bastion
+      hosts: bastion_hosts
+      
+    - name: Deploying NFS Provisioner & Jenkins Master 
+      hosts: bastion_hosts
+      become: true
+      gather_facts: false
+    
