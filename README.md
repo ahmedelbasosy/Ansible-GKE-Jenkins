@@ -295,12 +295,12 @@ you will find the Jenkins-Master Image Files Under:
  Our Docker File looks like the following:
       
       FROM jenkins/jenkins
-      ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+      ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false    # Skipping Setup Wizard
       USER root
 
 
       COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
-      RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+      RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt    # Installing Plugins
 
       ENV JENKINS_USER admin                          # Default User Name
       ENV JENKINS_PASS password                       # Default User Password
