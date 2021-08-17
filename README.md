@@ -287,8 +287,8 @@ Our Playbook.yaml file content:
 
   ### IMPORTANT:
   Our Image wiil be tagged TWICE:
-  jenkins-master:date                                   date +%d%m%y
-  jenkins-master:latest
+  - jenkins-master:date                                   # date +%d%m%y
+  - jenkins-master:latest
 
 you will find the Jenkins-Master Image Files Under:
 
