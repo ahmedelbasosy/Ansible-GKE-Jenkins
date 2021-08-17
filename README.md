@@ -18,8 +18,8 @@ This Repo shows What Can be done Using Ansible in order to provision a Full Envi
 2- A Bastion host That Act As -->
 - A Bastion Host.
 - NFS Server to provide NFS storage to our GKE Cluster Both ( or you can use Google Firestore ~ Minimum 1TB Instance )
-  -  "NFS storage Class" for Dynamic Provisioning         --> /srv/nfs/external_nfs_sc
-  -  "PersistentVolume" for Jenkins-Master Deployment     --> /srv/nfs/jenkins-master
+  -  "NFS storage Class" for Dynamic Provisioning                   # --> /srv/nfs/external_nfs_sc
+  -  "PersistentVolume" for Jenkins-Master Deployment               # --> /srv/nfs/jenkins-master
 - Docker Host where we will build our images
   -  jenkins-master
 - Kubernetes client to GKE cluster, so we will create our resources from there
