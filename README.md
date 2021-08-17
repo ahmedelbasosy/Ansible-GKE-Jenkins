@@ -8,6 +8,7 @@
 - [Setup GCP Dynamic Inventory File](#inventory_file)  <a name="Ansible-GKE-Jenkins"/>
 - [Edit Variables Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
 - [Our Playbooks](#playbooks) <a name="Ansible-GKE-Jenkins"/>
+- [Edit Jenkins Master Image Files](#jenkins_master_image) <a name="Ansible-GKE-Jenkins"/>
 
 # introduction
 This Repo shows What Can be done Using Ansible in order to provision a Full Environment having the following:
@@ -195,23 +196,28 @@ The Output should look like the following:
     gcp_cred_file: ../.files/SA_Key/gcp-key-ansible-sa.json
     
   ## 02-gke_vars.yaml
+
+  # IMPORTANT:
+
+  using your gcloud run the following to get the correct values to be used:
+
+    gcloud container get-server-config --zone { gcp_def_zone }
+
 --> GKE Cluster and Nodepool Variables ( Cluster_Name, Nodepool_Name, Versions, Number of Nodes )
 
     gke_cluster_name: YOUR_GKE_CLUSTER_NAME
     gke_cluster_version: YOUR_GKE_CLUSTER_VERSION               # EX: 1.20.8-gke.2100
-
-
-    gke_node_count: GKE_NODEPOOL_INITIAL_COUNT                  # EX: 1
-    gke_max_node_count: GKE_NODEPOOL_MAX_COUNT                  # EX: 3
-    gke_min_node_count: GKE_NODEPOOL_MIN_COUNT                  # EX: 1
-
     gke_node_pool_name: YOUR_NODEPOOL_NAME
     gke_node_machine_type: NODEPOOL_INSTANCE_TYPE               # EX: e2-medium
     gke_node_kube_version: YOUR_NODEPOOL_KUBE_VERSION           # EX: 1.20.6-gke.1000
     gke_node_image_type: YOUR_NODEPOOL_IMAGE_TYPE               # EX: UBUNTU_CONTAINERD
     gke_node_disk_size_gb: NODEPOOL_BOOT_DISK_SIZE_IN_GB        # EX: 50
     gke_max_pod_per_node: MAX_POD_PER_NODE                      # Max 110
+    gke_node_count: GKE_NODEPOOL_INITIAL_COUNT                  # EX: 1
+    gke_max_node_count: GKE_NODEPOOL_MAX_COUNT                  # EX: 3
+    gke_min_node_count: GKE_NODEPOOL_MIN_COUNT                  # EX: 1
 
+    
   ## 03-gke_oauth_scopes.yaml
 --> GKE Cluster OAuth Scopes
 
@@ -275,3 +281,28 @@ Our Playbook.yaml file content:
       - ../roles/gke-NFS-provisioner                      # Deploying NFS-Provisioner To Our GKE Cluster
       - ../roles/gke-JENKINS-Master-Deployment            # Deploying Jenkins-Master To our GKE Cluster
 
+# jenkins_master_image
+
+you will find the Jenkins-Master Image Files Under:
+
+      roles/jenkins-master-IMAGE/files/jenkins-master
+      
+      jenkins-master/
+      ├── Dockerfile                                    # Docker File
+      ├── default-user.groovy                           # .groovy File Used to Setup Default Admin Account
+      └── plugins.txt                                   # Some Plugins to be installed during Image Build
+      
+ Our Docker File looks like the following:
+      
+      FROM jenkins/jenkins
+      ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false
+      USER root
+
+
+      COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+      RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+
+      ENV JENKINS_USER admin                          # Default User Name
+      ENV JENKINS_PASS password                       # Default User Password
+
+      COPY default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
