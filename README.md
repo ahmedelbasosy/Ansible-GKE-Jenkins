@@ -6,7 +6,7 @@
 - [Setup GCP Account](#setup_gcp_account) <a name="Ansible-GKE-Jenkins"/>
 - [Setup Ansible Config File](#ansible_cfg_file) <a name="Ansible-GKE-Jenkins"/>
 - [Setup GCP Dynamic Inventory File](#inventory_file)  <a name="Ansible-GKE-Jenkins"/>
-- [Edit Variable Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
+- [Edit Variables Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
 - [Our Playbooks](#playbooks) <a name="Ansible-GKE-Jenkins"/>
 
 # introduction
