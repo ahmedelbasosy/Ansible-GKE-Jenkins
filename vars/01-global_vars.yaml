@@ -1,0 +1,5 @@
+gcp_def_zone: "YOUR_GCP_DEFAULT_ZONE"
+gcp_def_region: "YOUR_GCP_DEFAULT_REGION"
+gcp_project: YOUR_GCP_PROJECT
+gcp_cred_kind: serviceaccount
+gcp_cred_file: .files/SA_Key/YOUR_GCP_SERVICE_ACCOUNT_KEY.json

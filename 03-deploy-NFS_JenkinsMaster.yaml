@@ -1,5 +1,5 @@
 ---
-- name: Bootstrapping Bastion
+- name: Deploying NFS Provisioner & Jenkins Master
   hosts: bastion_hosts
   become: true
   gather_facts: false
@@ -9,7 +9,5 @@
     - vars/04-docker_vars.yaml
     - vars/nfs_ip.yaml
   roles:
-    - Bastion-NFS-preparation
-    - jenkins-master-IMAGE
-    - Templating-Files
-    
+    - gke-NFS-provisioner
+    - gke-JENKINS-Master-Deployment

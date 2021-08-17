@@ -1,0 +1,5 @@
+docker_username: YOUR_DOCKER_HUB_USERNAME
+docker_password: 'YOUR_DOCKER_HUB_PASSWORD'
+jenkins_master_image: YOUR_DOCKER_IMAGE_FOR_JENKINS_MASTER       # EX: ahmedhelbasosy/jenkins-master
+jenkins_username: JENKINS_ADMIN_USERNAME                         # EX: admin
+jenkins_password: JENKINS_PASSWORD                               # EX: welcome1

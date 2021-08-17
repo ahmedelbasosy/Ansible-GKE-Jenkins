@@ -3,9 +3,9 @@
   hosts: localhost
   gather_facts: false
   vars_files:
-    - vars/global_vars.yaml
-    - vars/gke_vars.yaml
-    - vars/gke_oauth_scopes.yaml
+    - vars/01-global_vars.yaml
+    - vars/02-gke_vars.yaml
+    - vars/03-gke_oauth_scopes.yaml
   roles:
     - gke-NETWORK
     - gke-FIREWALL
