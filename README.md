@@ -349,6 +349,12 @@ After Building our Jenkins-Master Image on Bastion Host. It's time to DEPLOY it 
 
 At the End you will get a direct link to you Jenkins Pod using it's LoadBalancer Service IP
 
+      TASK [../roles/gke-JENKINS-Master-Deployment : Hello From Jenkins-Master]             
+      ok: [bastion-ubuntu] => {
+                "msg": "You Can Access Your Jenkins Deployment from http://YOUR_JENKINS_POD_Public_IP:8080"
+                  }
+
+
 ### Note: 
       username: admin
       password: password
