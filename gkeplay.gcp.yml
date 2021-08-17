@@ -1,0 +1,22 @@
+plugin: gcp_compute
+projects:
+  - neat-coast-316300
+regions:
+  - us-central
+auth_kind: serviceaccount
+service_account_file: .files/SA_Key/neat-coast-316300-3542846d5971.json
+ansible_user: sa_108186408876856267356
+
+ansible_ssh_user: ansible
+#ansible_ssh_private_key_file: .files/.ssh/ansible_rsa
+
+keyed_groups:
+  - key: zone
+    prefix: zone
+    #hostnames:
+    #- name
+groups:
+  bastion_hosts: "'bastion' in name"
+  my-nodepool: "'my-nodepool' in name"
+
+

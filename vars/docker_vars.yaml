@@ -1,0 +1,3 @@
+docker_username: ahmedhelbasosy
+docker_password: '0103050709Bo$'
+jenkins_master_image: ahmedhelbasosy/jenkins-master

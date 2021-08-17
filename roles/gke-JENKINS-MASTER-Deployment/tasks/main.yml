@@ -1,0 +1,24 @@
+---
+# tasks file for gke-JENKINS-MASTER-Deployment
+#
+- name: Deploying Jenkins-Master to GKE Cluster {{ gke_cluster_name }}
+  shell:
+    cmd: kubectl apply -f {{ item }}
+    chdir: /root/YAML/jenkins-master-deployment
+  with_items:
+    - namespace.yaml
+    - jenkins-master-pv.yaml
+    - jenkins-master-pvc.yaml
+    - jenkins-master-deployment.yaml
+    - services.yaml
+
+- name: Sleep for 90 seconds and continue with play
+  shell: sleep 90
+
+- name: Getting Jenkins URL Ready
+  shell: kubectl get svc jenkins-master-portal -n jenkins-master --output jsonpath='{.status.loadBalancer.ingress[0].ip}'
+  register: jenkins_url
+
+- name: Hello From Jenkins-Master
+  debug:
+    msg: You Can Access Your Jenkins Deployment from http://{{ jenkins_url.stdout }}:8080

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: jenkins
+    role: master
+  name: jenkins-master
+  namespace: jenkins-master
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jenkins
+      role: master
+  strategy: {}
+  template:
+    metadata:
+      labels:
+        app: jenkins
+        role: master
+    spec:
+      containers:
+      - image: docker.io/{{ jenkins_master_image }}
+        name: jenkins-master
+        ports:
+        - name: jenkins-portal
+          containerPort: 8080
+        - name: jnlp-port
+          containerPort: 50000
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+      volumes:
+      - name: jenkins-home
+        persistentVolumeClaim:
+          claimName: jenkins-master-nfs-pvc

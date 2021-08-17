@@ -1,0 +1,10 @@
+---
+- name: Copy Jenkins Master Deployment Files
+  copy:
+    src: files/jenkins-master-deployment/
+    dest: /root/YAML/jenkins-master-deployment/
+
+- name: Copy NFS Provisioner Files
+  copy:
+    src: files/nfs-provisioner/
+    dest: /root/YAML/nfs-provisioner/

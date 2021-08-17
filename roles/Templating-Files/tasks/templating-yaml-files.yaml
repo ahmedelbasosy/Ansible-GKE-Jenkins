@@ -1,0 +1,39 @@
+- name: exports
+  template:
+        src: ../templates/exports.j2
+        dest: /etc/exports
+        owner: root
+        group: root
+        mode: 0644
+
+- name: Templating NFS Provisioner Deployment
+  template:
+        src: ../templates/NFS-deployment.yaml.j2
+        dest: /root/YAML/nfs-provisioner/NFS-deployment.yaml
+        owner: root
+        group: root
+        mode: 0644
+
+- name: Templating External NFS Storage Class YAML File
+  template:
+        src: ../templates/external_nfs_sc.yaml.j2
+        dest: /root/YAML/nfs-provisioner/external_nfs_sc.yaml
+        owner: root
+        group: root
+        mode: 0644
+
+- name: Templating Jenkins-Master PersistentVolume YAML File
+  template:
+        src: ../templates/jenkins-master-pv.yaml.j2
+        dest: /root/YAML/jenkins-master-deployment/jenkins-master-pv.yaml
+        owner: root
+        group: root
+        mode: 0644
+
+- name: Templating Jenkins-Master Deployment YAML File
+  template:
+        src: ../templates/jenkins-master-deployment.yaml.j2
+        dest: /root/YAML/jenkins-master-deployment/jenkins-master-deployment.yaml
+        owner: root
+        group: root
+        mode: 0644

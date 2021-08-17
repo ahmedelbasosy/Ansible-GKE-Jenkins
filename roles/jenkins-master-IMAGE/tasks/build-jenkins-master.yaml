@@ -20,7 +20,7 @@
 
 - name: Building Jenkins Master Image tag - "{{ image_tag.stdout }}"
   shell:
-   cmd: docker build -t "{{ jenkins_master_image }}":"{{ image_tag.stdout }}" .
+   cmd: docker build -t {{ jenkins_master_image }}:"{{ image_tag.stdout }}" .
    chdir: /root/jenkins-master/
 
 - name: Pushing Jenkins Master Image tag - "{{ image_tag.stdout }}"
@@ -32,7 +32,7 @@
 
 - name: Adding Jenkins Master Image tag - latest
   shell:
-   cmd: docker tag "{{ jenkins_master_image }}":"{{ image_tag.stdout }}" "{{ jenkins_master_image }}":latest
+   cmd: docker tag {{ jenkins_master_image }}:"{{ image_tag.stdout }}" {{ jenkins_master_image }}:latest
    chdir: /root/jenkins-master/
 
 - name: Pushing Jenkins Master Image tag - latest

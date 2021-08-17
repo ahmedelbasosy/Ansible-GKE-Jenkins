@@ -1,0 +1,5 @@
+bastion_os:
+bastion_machine_type:
+nfs_role:
+nfs_disk_size:
+nfs_mount_pont:

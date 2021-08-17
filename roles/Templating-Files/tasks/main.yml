@@ -1,0 +1,16 @@
+---
+# tasks file for Templating-Files
+#
+- name: Creating Needed Directories
+  include_tasks: create-required-directories.yaml
+
+- name: Copying Required YAML Files
+  include_tasks: copying-yaml-files.yaml
+
+- name: Templating Required YAML Files
+  include_tasks: templating-yaml-files.yaml
+
+- name: Restarting NFS service
+  service:
+    name: nfs-kernel-server
+    state: restarted

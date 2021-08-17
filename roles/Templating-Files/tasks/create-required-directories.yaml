@@ -1,0 +1,19 @@
+---
+- name: Creating NFS shares Directories
+  file:
+    path: /srv/nfs/{{ item }}
+    owner: nobody
+    group: nogroup
+    mode: '0777'
+    state: directory
+  with_items:
+    - external_nfs_sc
+    - jenkins-master
+
+- name: Creating YAML Directorie
+  file:
+    path: /root/YAML/{{ item }}
+    state: directory
+  with_items:
+    - nfs-provisioner
+    - jenkins-master-deployment

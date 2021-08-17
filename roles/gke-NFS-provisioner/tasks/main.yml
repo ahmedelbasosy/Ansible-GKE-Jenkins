@@ -1,0 +1,7 @@
+---
+# tasks file for gke-NFS-provisioner
+#
+- name: Deploying NFS provisioner to GKE Cluster {{ gke_cluster_name }}
+  shell:
+    cmd: kubectl apply -f .
+    chdir: /root/YAML/nfs-provisioner

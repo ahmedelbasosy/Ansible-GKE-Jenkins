@@ -178,8 +178,10 @@ The Output should look like the following:
     
 # var_files
     vars/
-    ├── 01-global_vars.yaml                        --> Default GCP Variables
-    ├── 02-gke_vars.yaml                           --> GKE Cluster and Nodepool Variables
+    ├── 01-global_vars.yaml                        --> Default GCP Variables ( Project, Region, Zone, Service Account Credentials File )
+    ├── 02-gke_vars.yaml                           --> GKE Cluster and Nodepool Variables ( Cluster_Name, Nodepool_Name, Versions, Number of Nodes )
     ├── 03-gke_oauth_scopes.yaml                   --> GKE Cluster OAuth Scopes
+    ├── 04-docker_vars.yaml                        --> Docker Variables ( username, password, and Image Name to be used )
     └── nfs_ip.yaml                                --> Used to Pass a Variable from 1st play to the 2nd play
     
+

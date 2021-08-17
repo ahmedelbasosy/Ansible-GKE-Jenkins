@@ -1,29 +1,42 @@
 ---
-- hosts: localhost
+- name: Bootstraping GKE Cluster 
+  hosts: localhost
   gather_facts: false
   vars_files:
     - vars/global_vars.yaml
     - vars/gke_vars.yaml
     - vars/gke_oauth_scopes.yaml
   roles:
-    - gke-network
+    - gke-NETWORK
+    - gke-FIREWALL
     - Bastion-NFS
-    - gke-cluster
-    - gke-nodepool
+    - gke-CLUSTER
+    - gke-NodePool
 
-- hosts: bastion
+- name: Bootstrapping Bastion
+  hosts: bastion_hosts
   become: true
   gather_facts: false
   vars_files:
     - vars/global_vars.yaml
     - vars/gke_vars.yaml
-    - vars/gke_oauth_scopes.yaml
+    - vars/docker_vars.yaml
     - vars/nfs_ip.yaml
-  vars:
-    docker_username: ahmedhelbasosy
-    docker_password: '0103050709Bo$'
   roles:
-    - bastion-NFS-preparation
-    - jenkins-master-image
+    - Bastion-NFS-preparation
+    - jenkins-master-IMAGE
+    - Templating-Files
+
+- name: Deploying NFS Provisioner & Jenkins Master 
+  hosts: bastion_hosts
+  become: true
+  gather_facts: false
+  vars_files:
+    - vars/global_vars.yaml
+    - vars/gke_vars.yaml
+    - vars/docker_vars.yaml
+    - vars/nfs_ip.yaml
+  roles:
     - gke-NFS-provisioner
+    - gke-JENKINS-Master-Deployment
     
