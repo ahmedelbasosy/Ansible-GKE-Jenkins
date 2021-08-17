@@ -7,7 +7,7 @@
 - [Setup Ansible Config File](#ansible_cfg_file) <a name="Ansible-GKE-Jenkins"/>
 - [Setup GCP Dynamic Inventory File](#inventory_file)  <a name="Ansible-GKE-Jenkins"/>
 - [Edit Variable Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
-- [Let's Play](#playbook) <a name="Ansible-GKE-Jenkins"/>
+- [Our Playbooks](#playbooks) <a name="Ansible-GKE-Jenkins"/>
 
 # introduction
 This Repo shows What Can be done Using Ansible in order to provision a Full Environment having the following:
@@ -41,17 +41,17 @@ This Repo shows What Can be done Using Ansible in order to provision a Full Envi
 
 # setup_gcp_account
 
-- Configuring our Google Cloud Account
+## - Configuring our Google Cloud Account
 
  Login to your Google Cloud Account using Cloud Console Create a New Project if Needed
  
- from your gcloud shell export the following environment vars:
+#### from your gcloud shell export the following environment vars:
  
      export SERVICE_ACCOUNT_ID=ansible-sa
      export PROJECT_ID=xxxxxxxxxxxxxxx
      
 
-1- Creating a Service Account
+#### 1- Creating a Service Account
     
     gcloud config set project $PROJECT_ID
 
@@ -59,7 +59,7 @@ This Repo shows What Can be done Using Ansible in order to provision a Full Envi
     
     
     
-2- Assign the Needed IAM Roles to The Service Account 
+#### 2- Assign the Needed IAM Roles to The Service Account 
 
     for role in \
     'roles/editor' \
@@ -78,18 +78,18 @@ This Repo shows What Can be done Using Ansible in order to provision a Full Envi
     --role=$role
     done
     
-3- Create A Key For The Service Account and save it
+#### 3- Create A Key For The Service Account and save it
 
     gcloud iam service-accounts keys create \
     .gcp/gcp-key-$SERVICE_ACCOUNT_ID.json \
     --iam-account=$SERVICE_ACCOUNT_ID@$PROJECT_ID.iam.gserviceaccount.com
     
-4- Add SSH Key To Project Metadata ( In Case you Are not using OSLogin )
+#### 4- Add SSH Key To Project Metadata ( In Case you Are not using OSLogin )
 
     ssh-keygen -t rsa -f ansible_rsa -C ansible
     gcloud compute project-info add-metadata --metadata-from-file ssh-keys=ansible_rsa.pub
 
-5- Save The Service Account Keys and the SSH Keys to Play Under .files
+#### 5- Save The Service Account Keys and the SSH Keys to Play Under .files directory
     
      .files
      ├── .ssh
@@ -185,7 +185,7 @@ The Output should look like the following:
     ├── 04-docker_vars.yaml                        --> Docker Variables ( username, password, and Image Name to be used )
     └── nfs_ip.yaml                                --> Used to Pass a Variable from 1st play to the 2nd play
     
-## 01-global_vars.yaml
+  ## 01-global_vars.yaml
 --> Default GCP Variables ( Project, Region, Zone, Service Account Credentials File )
 
     gcp_def_zone: "YOUR_GCP_DEFAULT_ZONE"
@@ -194,7 +194,7 @@ The Output should look like the following:
     gcp_cred_kind: serviceaccount
     gcp_cred_file: .files/SA_Key/gcp-key-ansible-sa.json
     
-## 02-gke_vars.yaml
+  ## 02-gke_vars.yaml
 --> GKE Cluster and Nodepool Variables ( Cluster_Name, Nodepool_Name, Versions, Number of Nodes )
 
     gke_cluster_name: YOUR_GKE_CLUSTER_NAME
@@ -212,7 +212,7 @@ The Output should look like the following:
     gke_node_disk_size_gb: NODEPOOL_BOOT_DISK_SIZE_IN_GB        # EX: 50
     gke_max_pod_per_node: MAX_POD_PER_NODE                      # Max 110
 
-## 03-gke_oauth_scopes.yaml
+  ## 03-gke_oauth_scopes.yaml
 --> GKE Cluster OAuth Scopes
 
     oauth_scopes:
@@ -224,26 +224,47 @@ The Output should look like the following:
      - "https://www.googleapis.com/auth/service.management.readonly"
      - "https://www.googleapis.com/auth/trace.append"
      
-## 04-docker_vars.yaml 
+  ## 04-docker_vars.yaml 
 --> Docker Variables ( username, password, and Image Name to be used )
 
       docker_username: YOUR_DOCKER_HUB_USERNAME
       docker_password: 'YOUR_DOCKER_HUB_PASSWORD'
       jenkins_master_image: YOUR_DOCKER_IMAGE_FOR_JENKINS_MASTER       # EX: ahmedhelbasosy/jenkins-master
 
-# playbook
+# playbooks
 
-Our Playbook consist of 3 Plays
+Our Playbook.yaml file would import 3 Playbooks
    
     ---
-    - name: Bootstraping GKE Cluster 
-      hosts: localhost
-      
-    - name: Bootstrapping Bastion
-      hosts: bastion_hosts
-      
-    - name: Deploying NFS Provisioner & Jenkins Master 
-      hosts: bastion_hosts
-      become: true
-      gather_facts: false
+    - name: Running "Bootstraping GKE Cluster" PLAYBOOK
+      import_playbook: 01-bootsraping-gke.yaml 
+
+    - name: Running "Bootstrapping Bastion" PLAYBOOK
+      import_playbook: 02-bootstraping-bastion.yaml
+
+    - name: Running "Deploying NFS Provisioner & Jenkins Master" PLAYBOOK 
+      import_playbook: 03-deploy-NFS_JenkinsMaster.yaml
     
+
+  ## 01-bootsraping-gke.yaml 
+
+    roles:
+      - gke-NETWORK                   # Creating a GCP Network
+      - gke-FIREWALL                  # Applying External & Internal Default Firewall Rules to GCP Network 
+      - Bastion-NFS                   # Creating a Bastion Host with Extra Disk to be used for NFS Shares
+      - gke-CLUSTER                   # Bootstraping a GKE Cluster
+      - gke-NodePool                  # Bootstrapping a NodePool 
+      
+  ## 02-bootstraping-bastion.yaml
+
+    roles:
+      - Bastion-NFS-preparation                   # Installing Required Software Packages
+      - jenkins-master-IMAGE                      # Building and Publishing Jenkins-Master Image using Bastion Host
+      - Templating-Files                          # Templating Files For NFS-Provisioner & Jenkins-Master Deployment
+      
+  ## 03-deploy-NFS_JenkinsMaster.yaml
+
+    roles:
+      - gke-NFS-provisioner                      # Deploying NFS-Provisioner To Our GKE Cluster
+      - gke-JENKINS-Master-Deployment            # Deploying Jenkins-Master To our GKE Cluster
+
