@@ -9,8 +9,9 @@
 - [Edit Variables Files](#var_files) <a name="Ansible-GKE-Jenkins"/>
 - [Our Playbooks](#playbooks) <a name="Ansible-GKE-Jenkins"/>
 - [Edit Jenkins Master Image Files](#jenkins_master_image) <a name="Ansible-GKE-Jenkins"/>
+- [Templating NFS-provisioner & Jenkins-Master Deployment](#templating_files) <a name="Ansible-GKE-Jenkins"/>
 - [Jenkins Master Deployment](#jenkins_master_deployment) <a name="Ansible-GKE-Jenkins"/>
-
+- [Hello From Jenkins Master](#hello_from_jenkins_master) <a name="Ansible-GKE-Jenkins"/>
 # introduction
 This Repo shows What Can be done Using Ansible in order to provision a Full Environment having the following:
 
@@ -309,5 +310,36 @@ you will find the Jenkins-Master Image Files Under:
       COPY default-user.groovy /usr/share/jenkins/ref/init.groovy.d/
 
 
-# jenkins_master_deployment
+# templating_files
+The Templating-Files role is used to Customizing Some YAML files and Copying Some Static Files too
 
+to /root/YAML on Bastion Host
+
+    Templating-Files
+    ├── files
+    │   ├── jenkins-master-deployment
+    │   │   ├── jenkins-master-pvc.yaml
+    │   │   ├── namespace.yaml
+    │   │   └── services.yaml
+    │   └── nfs-provisioner
+    │       └── NFS-rbac.yaml
+    │
+    └── templates
+        ├── NFS-deployment.yaml.j2
+        ├── exports.j2
+        ├── external_nfs_sc.yaml.j2
+        ├── jenkins-master-deployment.yaml.j2
+        └── jenkins-master-pv.yaml.j2
+
+
+# jenkins_master_deployment
+After Building our Jenkins-Master Image on Bastion Host. It's time to DEPLOY it to our GKE Cluster
+
+- a jenkins-master Namespace will be created
+- a PersistenVolume from NFS share to be created --> /nfs/srv/jenkins-master/ on Bastion Host
+- a PersistenVolumeClaim to be created
+- a Jenkins-Master Deployment to be created using our Jenkins-Master Image
+
+# hello_from_jenkins_master
+
+At the End you will get a direct link to you Jenkins Pod using it's LoadBalancer Service IP
