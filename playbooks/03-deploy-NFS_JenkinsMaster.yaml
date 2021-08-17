@@ -1,0 +1,13 @@
+---
+- name: Deploying NFS Provisioner & Jenkins Master
+  hosts: bastion_hosts
+  become: true
+  gather_facts: false
+  vars_files:
+    - ../vars/01-global_vars.yaml
+    - ../vars/02-gke_vars.yaml
+    - ../vars/04-docker_vars.yaml
+    - ../vars/nfs_ip.yaml
+  roles:
+    - ../roles/gke-NFS-provisioner
+    - ../roles/gke-JENKINS-Master-Deployment
