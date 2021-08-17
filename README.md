@@ -285,6 +285,11 @@ Our Playbook.yaml file content:
 
 # jenkins_master_image
 
+  ### IMPORTANT:
+  Our Image wiil be tagged TWICE:
+  jenkins-master:date                                   date +%d%m%y
+  jenkins-master:latest
+
 you will find the Jenkins-Master Image Files Under:
 
       roles/jenkins-master-IMAGE/files/jenkins-master
@@ -338,7 +343,7 @@ After Building our Jenkins-Master Image on Bastion Host. It's time to DEPLOY it 
 - a jenkins-master Namespace will be created
 - a PersistenVolume from NFS share to be created --> /nfs/srv/jenkins-master/ on Bastion Host
 - a PersistenVolumeClaim to be created
-- a Jenkins-Master Deployment to be created using our Jenkins-Master Image
+- a jenkins-master:latest Deployment to be created using our Jenkins-Master Image
 
 # hello_from_jenkins_master
 
